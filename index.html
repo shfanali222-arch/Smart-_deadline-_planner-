@@ -1,1 +1,293 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Deadline Planner</title>
+  <meta name="description" content="Calculate deadlines, days between dates, and working days with Smart Deadline Planner.">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #202124;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 28px 20px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+
+    header p {
+      margin: 0;
+      color: #666;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 18px;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 25px;
+      margin-bottom: 22px;
+      border-radius: 14px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 18px;
+      background: #202124;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 18px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      line-height: 1.7;
+    }
+
+    .result strong {
+      font-size: 20px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 15px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 26px;
+      }
+
+      .card {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>Smart Deadline Planner</h1>
+  <p>Calculate dates, deadlines and working days quickly.</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <h2>📅 Calculate a Future Date</h2>
+
+    <label for="startDate">Starting Date</label>
+    <input type="date" id="startDate">
+
+    <label for="amount">Add</label>
+    <input type="number" id="amount" placeholder="Example: 30" min="0">
+
+    <label for="unit">Choose Unit</label>
+    <select id="unit">
+      <option value="days">Days</option>
+      <option value="weeks">Weeks</option>
+      <option value="months">Months</option>
+    </select>
+
+    <button onclick="calculateDate()">Calculate Date</button>
+
+    <div class="result" id="dateResult">
+      Your result will appear here.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>⏳ Days Between Two Dates</h2>
+
+    <label for="date1">Start Date</label>
+    <input type="date" id="date1">
+
+    <label for="date2">End Date</label>
+    <input type="date" id="date2">
+
+    <button onclick="calculateDifference()">Calculate Difference</button>
+
+    <div class="result" id="differenceResult">
+      Your result will appear here.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💼 Working Days Calculator</h2>
+
+    <label for="workStart">Start Date</label>
+    <input type="date" id="workStart">
+
+    <label for="workEnd">End Date</label>
+    <input type="date" id="workEnd">
+
+    <button onclick="calculateWorkingDays()">Calculate Working Days</button>
+
+    <div class="result" id="workingResult">
+      Your result will appear here.
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Smart Deadline Planner — Simple tools for everyday date planning.</p>
+</footer>
+
+<script>
+
+function calculateDate() {
+  const start = document.getElementById("startDate").value;
+  const amount = Number(document.getElementById("amount").value);
+  const unit = document.getElementById("unit").value;
+  const result = document.getElementById("dateResult");
+
+  if (!start || isNaN(amount) || amount < 0) {
+    result.innerHTML = "Please enter a starting date and a valid number.";
+    return;
+  }
+
+  const date = new Date(start + "T00:00:00");
+
+  if (unit === "days") {
+    date.setDate(date.getDate() + amount);
+  }
+
+  if (unit === "weeks") {
+    date.setDate(date.getDate() + (amount * 7));
+  }
+
+  if (unit === "months") {
+    date.setMonth(date.getMonth() + amount);
+  }
+
+  result.innerHTML =
+    "<strong>" + formatDate(date) + "</strong><br>" +
+    "That is the date after " + amount + " " + unit + ".";
+}
+
+
+function calculateDifference() {
+  const first = document.getElementById("date1").value;
+  const second = document.getElementById("date2").value;
+  const result = document.getElementById("differenceResult");
+
+  if (!first || !second) {
+    result.innerHTML = "Please select both dates.";
+    return;
+  }
+
+  const dateA = new Date(first + "T00:00:00");
+  const dateB = new Date(second + "T00:00:00");
+
+  const difference = Math.abs(dateB - dateA);
+  const days = Math.round(difference / (1000 * 60 * 60 * 24));
+
+  const weeks = Math.floor(days / 7);
+  const remainingDays = days % 7;
+
+  result.innerHTML =
+    "<strong>" + days + " days</strong><br>" +
+    weeks + " weeks and " + remainingDays + " days.";
+}
+
+
+function calculateWorkingDays() {
+  const first = document.getElementById("workStart").value;
+  const second = document.getElementById("workEnd").value;
+  const result = document.getElementById("workingResult");
+
+  if (!first || !second) {
+    result.innerHTML = "Please select both dates.";
+    return;
+  }
+
+  let start = new Date(first + "T00:00:00");
+  const end = new Date(second + "T00:00:00");
+
+  if (start > end) {
+    const temp = start;
+    start = end;
+    end.setTime(temp.getTime());
+  }
+
+  let workingDays = 0;
+
+  while (start <= end) {
+    const day = start.getDay();
+
+    if (day !== 0 && day !== 6) {
+      workingDays++;
+    }
+
+    start.setDate(start.getDate() + 1);
+  }
+
+  result.innerHTML =
+    "<strong>" + workingDays + " working days</strong><br>" +
+    "Saturday and Sunday are excluded.";
+}
+
+
+function formatDate(date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+</script>
+
+</body>
+</html>
