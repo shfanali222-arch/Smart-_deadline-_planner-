@@ -1,2 +1,2 @@
-# Smart-_deadline-_planner-
-A simple and useful smart deadline and date planning tool.
+Age Calculator
+Calculate your exact age in years, months, and days by entering your date of birth.
